@@ -87,13 +87,11 @@ public class HTMLExporter implements Table.Exporter
 		out.write("<body>\n");
 		out.write("<table>\n");
 		out.write("<caption>");
-		out.write(tableName == null ? "<anonymous>" : tableName );
+		out.write(tableName == null ? "anonymous" : tableName );
 		out.write("</caption>\n");
 		
 		storeRow( columnNames ); // comma separated list of columns ids
-		out.write("</table>\n");
-		out.write("</body>\n");
-		out.write("</html>\n");
+		
 	}
 
 	public void storeRow( Iterator data ) throws IOException

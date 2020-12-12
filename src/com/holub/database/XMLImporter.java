@@ -1,28 +1,19 @@
 /*  (c) 2004 Allen I. Holub. All rights reserved.
- *
- *  This code may be used freely by yourself with the following
- *  restrictions:
- *
- *  o Your splash screen, about box, or equivalent, must include
- *    Allen Holub's name, copyright, and URL. For example:
- *
- *      This program contains Allen Holub's SQL package.<br>
- *      (c) 2005 Allen I. Holub. All Rights Reserved.<br>
- *              http://www.holub.com<br>
- *
- *    If your program does not run interactively, then the foregoing
- *    notice must appear in your documentation.
- *
- *  o You may not redistribute (or mirror) the source code.
- *
- *  o You must report any bugs that you find to me. Use the form at
- *    http://www.holub.com/company/contact.html or send email to
- *    allen@Holub.com.
- *
- *  o The software is supplied <em>as is</em>. Neither Allen Holub nor
- *    Holub Associates are responsible for any bugs (or any problems
- *    caused by bugs, including lost productivity or data)
- *    in any of this code.
+
+ *	Input format example
+ *	<?xml version="1.0" encoding="UTF-8" ?>
+ *	<name>
+ *	<row>
+ *	<first>Fred</first><last>Flintstone</last><addrId>1</addrId>
+ *	</row>
+ *	<row>
+ *	<first>Wilma</first><last>Flintstone</last><addrId>1</addrId>
+ *	</row>
+ *	<row>
+ *	<first>Allen</first><last>Holub</last><addrId>0</addrId>
+ *	</row>
+ *	</name>
+ * 
  */
 package com.holub.database;
 
@@ -37,6 +28,8 @@ public class XMLImporter implements Table.Importer
 {	private BufferedReader  in;			// null once end-of-file reached
 	private String[]        columnNames;
 	private String          tableName;
+	private String			rowName;
+	ArrayList<String> contents = new ArrayList<String>();
 
 	public XMLImporter( Reader in )
 	{	this.in = in instanceof BufferedReader
@@ -45,8 +38,35 @@ public class XMLImporter implements Table.Importer
 	                    ;
 	}
 	public void startTable()			throws IOException
-	{	tableName   = in.readLine().trim();
-		columnNames = in.readLine().split("\\s*,\\s*");
+	{	in.readLine();
+		tableName   = in.readLine().trim().replaceAll("<", "").replaceAll(">", "");
+		rowName = in.readLine().trim().replaceAll("<", "").replaceAll(">", "");
+		String temp = in.readLine();
+		ArrayList<String> item = new ArrayList<String>();
+		
+		while(temp != null) {
+			if(!temp.trim().equals("</" +rowName +">") && !temp.trim().equals("<" +rowName +">")){
+				contents.add(temp);
+			}
+			temp = in.readLine();
+		}
+		contents.remove(contents.size()-1);
+		temp = contents.get(0);
+		temp = temp.replaceAll("<", "").replaceAll(">", "<,>").replaceAll("/", ",<,>");
+		for(String t : (temp.split("<,>"))) {
+			if(!t.endsWith(",")) {
+				item.add(t);
+			}
+			
+		}
+		
+		columnNames = new String[item.size()/2];
+		for(int i = 0; i<item.size()/2; i++) {
+			columnNames[i] = item.get(i*2);
+		}
+		
+	
+		
 	}
 	public String loadTableName()		throws IOException
 	{	return tableName;
@@ -60,12 +80,21 @@ public class XMLImporter implements Table.Importer
 
 	public Iterator loadRow()			throws IOException
 	{	Iterator row = null;
-		if( in != null )
-		{	String line = in.readLine();
+		if( contents.size() != 0 )
+		{	
+			String line = contents.get(0);
+			contents.remove(0);
+			String n_line = "";
 			if( line == null )
-				in = null;
+				contents = null;
 			else
-				row = new ArrayIterator( line.split("\\s*,\\s*"));
+				for(String t : (line.replaceAll("<", "").replaceAll(">", "<,>").replaceAll("/", ",<,>").split("<,>"))) {
+					if(t.endsWith(",")) {
+						n_line = n_line + t;
+					}
+				}
+				n_line = n_line.substring(0, n_line.length() - 1);
+				row = new ArrayIterator( n_line.split(","));
 		}
 		return row;
 	}

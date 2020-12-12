@@ -69,17 +69,17 @@ public class XMLExporter implements Table.Exporter
 			out.write("<row>\n");
 			for(i = 1; i <= width; i++) {
 				if(data.hasNext()) {
-					out.write("<"+ item.get(i-1) +">\n");
+					out.write("<"+ item.get(i-1) +">");
 					Object datum = data.next();
 					if( datum != null )	
 						out.write( datum.toString() );
-					out.write("</"+ item.get(i-1) +">\n");
+					out.write("</"+ item.get(i-1) +">");
 				}
 				else {
 					break;
 				}	
 			}
-			out.write("</row>\n");
+			out.write("\n</row>\n");
 		}
 
 	

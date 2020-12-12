@@ -35,6 +35,8 @@ public class XMLExporter implements Table.Exporter
 	private final Writer out;
 	private 	  int	 width;
 	private		  int 	 height;
+	private String tablename;
+	ArrayList<String> item = new ArrayList<String>();
 
 	public XMLExporter( Writer out )
 	{	this.out = out;
@@ -47,8 +49,12 @@ public class XMLExporter implements Table.Exporter
 
 	{	this.width = width;
 		this.height = height;
-		out.write(tableName == null ? "<table name = \"anonymous\">" : "<table name = \""+ tableName + "\">\n" );
-		storeRow( columnNames ); // comma separated list of columns ids
+		this.tablename= (tableName == null ? "anonymous": tableName);
+		out.write("<" + tablename + ">\n");
+		while(columnNames.hasNext()) {
+			item.add(columnNames.next().toString());
+		}
+		
 	
 	}
 
@@ -56,24 +62,24 @@ public class XMLExporter implements Table.Exporter
 	{	int i = width;
 		int h = height;
 	
-		for(h = height; h > 0; h--) {
+		for(h = 1; h <= height; h++) {
 			if(!data.hasNext()) {
 				break;
 			}
-			out.write("<tr>\n");
-			for(i = width; i > 0; i--) {
+			out.write("<row>\n");
+			for(i = 1; i <= width; i++) {
 				if(data.hasNext()) {
-					out.write("<td>\n");
+					out.write("<"+ item.get(i-1) +">\n");
 					Object datum = data.next();
 					if( datum != null )	
 						out.write( datum.toString() );
-					out.write("</td>\n");
+					out.write("</"+ item.get(i-1) +">\n");
 				}
 				else {
 					break;
 				}	
 			}
-			out.write("</tr>\n");
+			out.write("</row>\n");
 		}
 
 	
@@ -83,6 +89,6 @@ public class XMLExporter implements Table.Exporter
 		out.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
 	}
 	public void endTable()   throws IOException {
-		out.write("</table>");
+		out.write("</" + tablename + ">");
 	}
 }

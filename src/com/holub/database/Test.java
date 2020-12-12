@@ -26,22 +26,40 @@ public class Test {
 		File addr = new File(location, "address.csv");
 		File name = new File(location, "name.csv");
 		
+		//Import address.csv
 		Path path_add = addr.getAbsoluteFile().toPath();
 		br1 = Files.newBufferedReader(path_add);
 		Table t1 = new TableFactory().create(new CSVImporter(br1));
 		
+		//Import name.csv
 		Path path_name = name.getAbsoluteFile().toPath();
 		br2 = Files.newBufferedReader(path_name);
 		Table t2 = new TableFactory().create(new CSVImporter(br2));
 		
+		/*HTML Exporter Test*/
+		
+		//Export address.html
 		Writer out1 = new FileWriter(new File(location, "address" + ".html"));
 		t1.export( new HTMLExporter(out1) );
+		out1.close();
 		
+		//Export name.html
 		Writer out2 = new FileWriter(new File(location, "name" + ".html"));
 		t2.export( new HTMLExporter(out2) );
-		
-		out1.close();
 		out2.close();
+		
+		/*XML Exporter Test*/
+		
+		//Export address.xml
+		out1 = new FileWriter(new File(location, "address" + ".xml"));
+		t1.export( new XMLExporter(out1) );
+		out1.close();
+		
+		//Export name.xml
+		out2 = new FileWriter(new File(location, "name" + ".xml"));
+		t2.export( new XMLExporter(out2) );
+		out2.close();
+		
 		
 
 	}

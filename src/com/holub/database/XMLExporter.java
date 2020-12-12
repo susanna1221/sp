@@ -31,41 +31,58 @@ import java.util.*;
 
 
 public class XMLExporter implements Table.Exporter
-{	private final Writer out;
+{	
+	private final Writer out;
 	private 	  int	 width;
+	private		  int 	 height;
 
 	public XMLExporter( Writer out )
 	{	this.out = out;
 	}
 
 	public void storeMetadata( String tableName,
-							   int width,
-							   int height,
-							   Iterator columnNames ) throws IOException
+						   int width,
+						   int height,
+						   Iterator columnNames ) throws IOException
 
 	{	this.width = width;
-		out.write(tableName == null ? "<anonymous>" : tableName );
-		out.write("\n");
+		this.height = height;
+		out.write(tableName == null ? "<table name = \"anonymous\">" : "<table name = \""+ tableName + "\">\n" );
 		storeRow( columnNames ); // comma separated list of columns ids
+	
 	}
 
 	public void storeRow( Iterator data ) throws IOException
 	{	int i = width;
-		while( data.hasNext() )
-		{	Object datum = data.next();
-
-			// Null columns are represented by an empty field
-			// (two commas in a row). There's nothing to write
-			// if the column data is null.
-			if( datum != null )	
-				out.write( datum.toString() );
-
-			if( --i > 0 )
-				out.write(",\t");
+		int h = height;
+	
+		for(h = height; h > 0; h--) {
+			if(!data.hasNext()) {
+				break;
+			}
+			out.write("<tr>\n");
+			for(i = width; i > 0; i--) {
+				if(data.hasNext()) {
+					out.write("<td>\n");
+					Object datum = data.next();
+					if( datum != null )	
+						out.write( datum.toString() );
+					out.write("</td>\n");
+				}
+				else {
+					break;
+				}	
+			}
+			out.write("</tr>\n");
 		}
-		out.write("\n");
+
+	
 	}
 
-	public void startTable() throws IOException {/*nothing to do*/}
-	public void endTable()   throws IOException {/*nothing to do*/}
+	public void startTable() throws IOException {
+		out.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
+	}
+	public void endTable()   throws IOException {
+		out.write("</table>");
+	}
 }

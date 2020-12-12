@@ -76,8 +76,7 @@ public class HTMLExporter implements Table.Exporter
 
 	{	this.width = width;
 		this.height = height;
-		out.write("<!doctype html>\n");
-		out.write("<html>\n");
+
 		out.write("<head>\n");
 		out.write("<title>\n");
 		out.write(tableName == null ? "<anonymous>" : tableName );
@@ -121,6 +120,14 @@ public class HTMLExporter implements Table.Exporter
 		
 	}
 
-	public void startTable() throws IOException {/*nothing to do*/}
-	public void endTable()   throws IOException {/*nothing to do*/}
+	public void startTable() throws IOException {
+		out.write("<!doctype html>\n");
+		out.write("<html>\n");
+
+	}
+	public void endTable()   throws IOException {
+		out.write("</table>\n");
+		out.write("</body>\n");
+		out.write("</html>\n");
+	}
 }

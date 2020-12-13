@@ -662,7 +662,8 @@ public final class Database
 
 	public Table execute( String expression ) throws IOException, ParseFailure
 	{	try
-		{	this.expression   = expression;
+		{	
+			this.expression   = expression;
 			in				  = new Scanner(tokens, expression);
 			in.advance();	// advance to the first token.
 			return statement();
@@ -797,11 +798,12 @@ public final class Database
 		}
 		else if( in.matchAdvance(SELECT) != null )
 		{	List columns = idList();
-
+			//for(int i = 0; i<columns.size();i++) {
+			//	System.out.printf("%s\n", columns.get(i));
+			//}
 			String into = null;
 			if( in.matchAdvance(INTO) != null )
 				into = in.required(IDENTIFIER);
-
 			in.required( FROM );
 			List requestedTableNames = idList();
 
@@ -1412,7 +1414,6 @@ public final class Database
 		{	String participant = (String) tableNames.next();
 			participantsInJoin.add( tables.get(participant) );
 		}
-
 		// Now do the select operation. First create a Strategy
 		// object that picks the correct rows, then pass that
 		// object through to the primary table's select() method.
@@ -1433,7 +1434,7 @@ public final class Database
 					}
 				}
 			};
-
+		
 		try
 		{	Table result = primary.select(selector, columns, participantsInJoin);
 

@@ -447,28 +447,59 @@ import com.holub.tools.ArrayIterator;
 		// If we're not doing a join, use the more efficient version
 		// of select().
 
-		if (otherTables == null || otherTables.length == 0)
+		if (otherTables == null || otherTables.length == 0) 
 			return select(where, requestedColumns);
-
+			
 		// Make the current table not be a special case by effectively
 		// prefixing it to the otherTables array.
 
 		Table[] allTables = new Table[otherTables.length + 1];
 		allTables[0] = this;
 		System.arraycopy(otherTables, 0, allTables, 1, otherTables.length);
+		
+		//* Ã³¸®
+		if (requestedColumns == null || requestedColumns.length == 0) {
+			requestedColumns = getRequestedColumnsForStar(allTables);
+		}
 
 		// Create places to hold the result of the join and to hold
 		// iterators for each table involved in the join.
-
 		Table resultTable = new ConcreteTable(null, requestedColumns);
 		Cursor[] envelope = new Cursor[allTables.length];
-
 		// Recursively compute the Cartesian product, adding to the
 		// resultTable all rows that the Selector approves
 
 		selectFromCartesianProduct(0, where, requestedColumns, allTables, envelope, resultTable);
-
 		return new UnmodifiableTable(resultTable);
+	}
+	
+	//get * values
+	private String[] getRequestedColumnsForStar(Table[] allTables) {
+		ArrayList<String> testList = new ArrayList<String>();
+		ArrayList<Cursor[]> envelope = new ArrayList<Cursor[]>();
+		for(int i = 0; i < allTables.length; i++) {
+			Results currentRow = (Results) allTables[i].rows();
+			envelope.add(new Cursor[] { currentRow });
+			
+			for(Cursor k : envelope.get(i)) {
+				for(int j = 0; j < k.columnCount(); j++) {
+					testList.add(k.columnName(j));
+				}
+			}
+		}
+		ArrayList<String> new_testList = new ArrayList<String>();
+		for(String i : testList) {
+			if(!new_testList.contains(i)) {
+				new_testList.add(i);
+			}
+		}
+		String[] requestedColumns = new String[new_testList.size()];
+		int count = 0;
+		for(String i : new_testList) {
+			requestedColumns[count++] = i;
+		}
+		
+		return requestedColumns;
 	}
 
 	/**
@@ -595,7 +626,6 @@ import com.holub.tools.ArrayIterator;
 	public boolean isDirty() {
 		return isDirty;
 	}
-
 	private int width() {
 		return columnNames.length;
 	}

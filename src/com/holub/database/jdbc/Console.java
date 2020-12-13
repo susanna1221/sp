@@ -144,7 +144,7 @@ public class Console
 	{	
 		String input 		= sqlIn.getText().replaceAll("\\s+", " ");
 		String statements[] = input.split(";");
-
+		
 		String line = "====================================\n";
 
 		sqlIn.setText("");
@@ -157,14 +157,16 @@ public class Console
 					continue;
 
 				if( !(statements[i].startsWith("SELECT") || statements[i].startsWith("select")) )
-				{	int	status = statement.executeUpdate(statements[i]);
+				{	
+					int	status = statement.executeUpdate(statements[i]);
 					sqlOut.setText( 
 						sqlOut.getText() + line +
 						"Processed: " + statements[i] +
 						"\nStatus=" + String.valueOf(status) + "\n");
 				}
 				else
-				{	ResultSet results = statement.executeQuery( statements[i] );
+				{	
+					ResultSet results = statement.executeQuery( statements[i] );
 					sqlOut.setText(
 							sqlOut.getText() + line +
 							"Processed: " + statements[i] + 
@@ -193,8 +195,8 @@ public class Console
 	}
 	//----------------------------------------------------------------------
 	private String resultSetasString( ResultSet results ) throws SQLException
-	{	ResultSetMetaData metadata = results.getMetaData();
-
+	{	
+		ResultSetMetaData metadata = results.getMetaData();
 		StringBuffer b = new StringBuffer();
 		int			 columns = metadata.getColumnCount();
 		for( int i = 1; i <= columns; ++i )

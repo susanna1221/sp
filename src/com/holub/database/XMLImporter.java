@@ -1,7 +1,7 @@
 /*  (c) 2004 Allen I. Holub. All rights reserved.
 
  *	Input format example
- *	<?xml version="1.0" encoding="UTF-8" ?>
+ *	<?xml version="1.0" encoding="UTF-8" ?> 
  *	<name>
  *	<row>
  *	<first>Fred</first><last>Flintstone</last><addrId>1</addrId>
@@ -85,16 +85,14 @@ public class XMLImporter implements Table.Importer
 			String line = contents.get(0);
 			contents.remove(0);
 			String n_line = "";
-			if( line == null )
-				contents = null;
-			else
-				for(String t : (line.replaceAll("<", "").replaceAll(">", "<,>").replaceAll("/", ",<,>").split("<,>"))) {
-					if(t.endsWith(",")) {
-						n_line = n_line + t;
-					}
+
+			for(String t : (line.replaceAll("<", "").replaceAll(">", "<,>").replaceAll("/", ",<,>").split("<,>"))) {
+				if(t.endsWith(",")) {
+					n_line = n_line + t;
 				}
-				n_line = n_line.substring(0, n_line.length() - 1);
-				row = new ArrayIterator( n_line.split(","));
+			}
+			n_line = n_line.substring(0, n_line.length() - 1);
+			row = new ArrayIterator( n_line.split(","));
 		}
 		return row;
 	}

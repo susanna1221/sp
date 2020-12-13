@@ -84,4 +84,5 @@ commit
 rollback
 select * from foo
 
+
 drop table foo

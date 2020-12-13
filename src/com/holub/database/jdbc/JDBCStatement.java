@@ -45,7 +45,8 @@ public class JDBCStatement extends StatementAdapter
   
 	public int executeUpdate(String sqlString) throws SQLException
 	{	try
-		{	database.execute( sqlString );
+		{	
+			database.execute( sqlString );
 			return database.affectedRows();
 		}
 		catch( Exception e )
@@ -55,7 +56,8 @@ public class JDBCStatement extends StatementAdapter
 	
 	public ResultSet executeQuery(String sqlQuery) throws SQLException
 	{	try
-		{	Table result = database.execute( sqlQuery );
+		{	
+			Table result = database.execute( sqlQuery );
 			return new JDBCResultSet( result.rows() );
 		}
 		catch( Exception e )

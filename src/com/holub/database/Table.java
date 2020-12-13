@@ -79,6 +79,7 @@ public interface Table extends Serializable, Cloneable
 	 * @throws IndexOutOfBoundsException One of the requested columns
 	 * 				doesn't exist in either table.
 	 */
+
 	int  insert( String[] columnNames, Object[] values );
 
 	/** A convenience overload of {@link #insert(String[],Object[])} */
@@ -114,7 +115,7 @@ public interface Table extends Serializable, Cloneable
 	 */
 
 	int  delete( Selector where );
-
+	
 	/** begin a transaction */
 	public void begin();
 

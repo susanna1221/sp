@@ -1408,7 +1408,7 @@ public final class Database
 		// objects.
 
 		Table primary = (Table) tables.get( (String) tableNames.next() );
-
+		
 		List participantsInJoin = new ArrayList();
 		while( tableNames.hasNext() )
 		{	String participant = (String) tableNames.next();

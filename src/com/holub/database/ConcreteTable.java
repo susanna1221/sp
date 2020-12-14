@@ -460,6 +460,7 @@ import com.holub.tools.ArrayIterator;
 		//* Ã³¸®
 		if (requestedColumns == null || requestedColumns.length == 0) {
 			requestedColumns = getRequestedColumnsForStar(allTables);
+			
 		}
 
 		// Create places to hold the result of the join and to hold
@@ -475,8 +476,25 @@ import com.holub.tools.ArrayIterator;
 	
 	//get * values
 	private String[] getRequestedColumnsForStar(Table[] allTables) {
-		
-		return (String[]) this.columnNames.clone();
+		ArrayList<String> testList = new ArrayList<String>();
+		ArrayList<Cursor[]> envelope = new ArrayList<Cursor[]>();
+		for(int i = 0; i < allTables.length; i++) {
+			Results currentRow = (Results) allTables[i].rows();
+			envelope.add(new Cursor[] { currentRow });
+
+			for(Cursor k : envelope.get(i)) {
+				for(int j = 0; j < k.columnCount(); j++) {
+					testList.add(k.columnName(j));
+				}
+			}
+		}
+		ArrayList<String> new_testList = new ArrayList<String>();
+		for(String i : testList) {
+			if(!new_testList.contains(i)) {
+				new_testList.add(i);
+			}
+		}
+		return new_testList.toArray(new String[new_testList.size()]);
 	}
 
 	/**

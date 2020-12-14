@@ -122,4 +122,7 @@ public class JTableExporter implements Table.Exporter
 			frame.setVisible( true );
 		}
 	}
+	public void accept(ExporterVisitor exportervisitor) {
+		exportervisitor.visit(this);
+	}
 }

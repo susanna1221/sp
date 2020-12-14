@@ -130,4 +130,7 @@ public class HTMLExporter implements Table.Exporter
 		out.write("</body>\n");
 		out.write("</html>\n");
 	}
+	public void accept(ExporterVisitor exportervisitor) {
+		exportervisitor.visit(this);
+	}
 }

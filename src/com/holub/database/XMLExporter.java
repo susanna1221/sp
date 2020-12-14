@@ -91,4 +91,7 @@ public class XMLExporter implements Table.Exporter
 	public void endTable()   throws IOException {
 		out.write("</" + tablename + ">");
 	}
+	public void accept(ExporterVisitor exportervisitor) {
+		exportervisitor.visit(this);
+	}
 }

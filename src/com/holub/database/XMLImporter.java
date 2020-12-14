@@ -98,4 +98,11 @@ public class XMLImporter implements Table.Importer
 	}
 
 	public void endTable() throws IOException {}
+	public void accept(ImporterVisitor importervisitor) {
+		try {
+			importervisitor.visit(this);
+		} catch (IOException e) {
+			System.out.println("IOException Error\n");
+		}
+	}
 }

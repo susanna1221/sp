@@ -73,7 +73,7 @@ public class CSVImporter implements Table.Importer
 	{	this.in = in instanceof BufferedReader
 						? (BufferedReader)in
                         : new BufferedReader(in)
-	                    ;
+	                    ;			
 	}
 	public void startTable()			throws IOException
 	{	tableName   = in.readLine().trim();
@@ -102,4 +102,11 @@ public class CSVImporter implements Table.Importer
 	}
 
 	public void endTable() throws IOException {}
+	public void accept(ImporterVisitor importervisitor) {
+		try {
+			importervisitor.visit(this);
+		} catch (IOException e) {
+			System.out.println("IOException Error\n");
+		}
+	}
 }

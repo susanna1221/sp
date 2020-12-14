@@ -96,23 +96,32 @@ import com.holub.tools.ArrayIterator;
 	 * Create a table using an importer. See {@link CSVImporter} for an example.
 	 */
 	public ConcreteTable(Table.Importer importer) throws IOException {
+		ImporterVisitor checkfile = new ImporterVisitorCheck();
+		ImporterVisitor checkLoadColumnNames = new ImporterVisitorGetCol();
+		ImporterVisitor checkLoadData = new ImporterVisitorGetData();
+		ImporterVisitor checkisEnd = new ImporterVisitorGetEnd();
+		
 		importer.startTable();
+		importer.accept(checkfile);
 
 		tableName = importer.loadTableName();
 		int width = importer.loadWidth();
 		Iterator columns = importer.loadColumnNames();
 
 		this.columnNames = new String[width];
-		for (int i = 0; columns.hasNext();)
+		for (int i = 0; columns.hasNext();) {
 			columnNames[i++] = (String) columns.next();
-
+		}
+		importer.accept(checkLoadColumnNames);
 		while ((columns = importer.loadRow()) != null) {
 			Object[] current = new Object[width];
 			for (int i = 0; columns.hasNext();)
 				current[i++] = columns.next();
 			this.insert(current);
 		}
+		importer.accept(checkLoadData);
 		importer.endTable();
+		importer.accept(checkisEnd);
 	}
 
 	// ----------------------------------------------------------------------
@@ -594,7 +603,6 @@ import com.holub.tools.ArrayIterator;
 			while (column.hasNext())
 				columnNames[i++] = column.next().toString();
 		}
-
 		if (other != null)
 			otherTables = (Table[]) other.toArray(new Table[other.size()]);
 

@@ -97,10 +97,6 @@ import com.holub.tools.ArrayIterator;
 	 */
 	public ConcreteTable(Table.Importer importer) throws IOException {
 		ImporterVisitor checkfile = new ImporterVisitorCheck();
-		ImporterVisitor checkLoadColumnNames = new ImporterVisitorGetCol();
-		ImporterVisitor checkLoadData = new ImporterVisitorGetData();
-		ImporterVisitor checkisEnd = new ImporterVisitorGetEnd();
-		
 		importer.startTable();
 		importer.accept(checkfile);
 
@@ -112,27 +108,39 @@ import com.holub.tools.ArrayIterator;
 		for (int i = 0; columns.hasNext();) {
 			columnNames[i++] = (String) columns.next();
 		}
-		importer.accept(checkLoadColumnNames);
+		checkfile = new ImporterVisitorGetCol();
+		importer.accept(checkfile);
 		while ((columns = importer.loadRow()) != null) {
 			Object[] current = new Object[width];
 			for (int i = 0; columns.hasNext();)
 				current[i++] = columns.next();
 			this.insert(current);
 		}
-		importer.accept(checkLoadData);
+		checkfile = new ImporterVisitorGetData();
+		importer.accept(checkfile);
 		importer.endTable();
-		importer.accept(checkisEnd);
+		checkfile = new ImporterVisitorGetEnd();
+		importer.accept(checkfile);
 	}
 
 	// ----------------------------------------------------------------------
 	public void export(Table.Exporter exporter) throws IOException {
+		ExporterVisitor checkfile = new ExporterVisitorCheck();
 		exporter.startTable();
+		exporter.accept(checkfile);
+		
 		exporter.storeMetadata(tableName, columnNames.length, rowSet.size(), new ArrayIterator(columnNames));
+		checkfile = new ExporterVisitorStoreMeta();
+		exporter.accept(checkfile);
 
 		for (Iterator i = rowSet.iterator(); i.hasNext();)
 			exporter.storeRow(new ArrayIterator((Object[]) i.next()));
-
+		
+		checkfile = new ExporterVisitorStoreRow();
+		exporter.accept(checkfile);
 		exporter.endTable();
+		checkfile = new ExporterVisitorEnd();
+		exporter.accept(checkfile);
 		isDirty = false;
 	}
 

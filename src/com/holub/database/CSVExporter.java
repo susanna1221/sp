@@ -73,7 +73,7 @@ public class CSVExporter implements Table.Exporter
 							   int height,
 							   Iterator columnNames ) throws IOException
 
-	{	this.width = width;
+	{	this.width = width; 
 		out.write(tableName == null ? "<anonymous>" : tableName );
 		out.write("\n");
 		storeRow( columnNames ); // comma separated list of columns ids

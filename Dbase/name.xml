@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<name>
+<row>
+<first>Fred</first><last>Flintstone</last><addrId>1</addrId>
+</row>
+<row>
+<first>Wilma</first><last>Flintstone</last><addrId>1</addrId>
+</row>
+<row>
+<first>Allen</first><last>Holub</last><addrId>0</addrId>
+</row>
+</name>

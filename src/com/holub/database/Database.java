@@ -801,17 +801,16 @@ public final class Database
 		else if( in.matchAdvance(SELECT) != null )
 		{	
 			ArrayList<String[]>viewProcess = new ArrayList<String[]>();
-
-			List columns = idList();
+			boolean isDistinctTrue = false;
 			if(in.matchAdvance(DISTINCT) != null) {
 				String[] temp = {"distinct"};
 				viewProcess.add(temp);
+				isDistinctTrue = true;
 				
 			}
-			if(in.matchAdvance(ORDERBY) != null) {
-				String[] temp = {"orederby"};
-				viewProcess.add(temp);
-			}
+			List columns = idList();
+			
+			
 			//for(int i = 0; i<columns.size();i++) {
 			//	System.out.printf("%s\n", columns.get(i));
 			//}
@@ -825,7 +824,13 @@ public final class Database
 								? null : expr();
 			Table result = doSelect(columns, into,
 								requestedTableNames, where, viewProcess );
-			return result;
+			if(isDistinctTrue) {
+				ProcessDeco distinct = new SelectViewDistinct(result, null);
+				distinct.execute();
+				result = distinct.returnResult();
+						
+			}
+			return (UnmodifiableTable)result;
 		}
 		else
 		{	error("Expected insert, create, drop, use, "

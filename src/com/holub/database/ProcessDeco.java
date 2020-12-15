@@ -1,10 +1,12 @@
 package com.holub.database;
 
-public abstract class SelectViewProcess {
+public abstract class ProcessDeco{
 	protected Table resultTable;
-	protected SelectViewProcess svp;
+	protected ProcessDeco p;
+	
 	public abstract void execute();
 	public Table returnResult() {
 		return resultTable;
 	}
 }
+

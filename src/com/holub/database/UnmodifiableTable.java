@@ -80,7 +80,7 @@ public class UnmodifiableTable implements Table
 	{	throw new UnsupportedOperationException();
 	}
 	public String[] getColNames() {
-		return null;
+		return wrapped.getColNames();
 	}
 	public Table select(Selector w,String[] r,Table[] o)
 	{	return wrapped.select( w, r, o );

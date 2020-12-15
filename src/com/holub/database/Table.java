@@ -116,6 +116,8 @@ public interface Table extends Serializable, Cloneable
 
 	int  delete( Selector where );
 	
+	public String[] getColNames();
+	
 	/** begin a transaction */
 	public void begin();
 

@@ -396,6 +396,8 @@ public final class Database
 		PRIMARY		= tokens.create( "'PRIMARY"	),
 		ROLLBACK	= tokens.create( "'ROLLBACK"),
 		SELECT		= tokens.create( "'SELECT"	),
+		DISTINCT	= tokens.create( "'DISTINCT"	),
+		ORDERBY		= tokens.create( "'ORDERBY"	),
 		SET			= tokens.create( "'SET"		),
 		TABLE		= tokens.create( "'TABLE"	),
 		UPDATE		= tokens.create( "'UPDATE"	),
@@ -797,7 +799,19 @@ public final class Database
 			affectedRows = doDelete( tableName, expr() );
 		}
 		else if( in.matchAdvance(SELECT) != null )
-		{	List columns = idList();
+		{	
+			ArrayList<String[]>viewProcess = new ArrayList<String[]>();
+
+			List columns = idList();
+			if(in.matchAdvance(DISTINCT) != null) {
+				String[] temp = {"distinct"};
+				viewProcess.add(temp);
+				
+			}
+			if(in.matchAdvance(ORDERBY) != null) {
+				String[] temp = {"orederby"};
+				viewProcess.add(temp);
+			}
 			//for(int i = 0; i<columns.size();i++) {
 			//	System.out.printf("%s\n", columns.get(i));
 			//}
@@ -810,7 +824,7 @@ public final class Database
 			Expression where = (in.matchAdvance(WHERE) == null)
 								? null : expr();
 			Table result = doSelect(columns, into,
-								requestedTableNames, where );
+								requestedTableNames, where, viewProcess );
 			return result;
 		}
 		else
@@ -1393,7 +1407,8 @@ public final class Database
 	//
 	private Table doSelect( List columns, String into,
 										List requestedTableNames,
-										final Expression where )
+										final Expression where,
+										ArrayList<String[]> viewProcess)
 										throws ParseFailure
 	{
 

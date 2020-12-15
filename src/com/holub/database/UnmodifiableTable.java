@@ -79,7 +79,9 @@ public class UnmodifiableTable implements Table
 	private final void illegal()
 	{	throw new UnsupportedOperationException();
 	}
-
+	public String[] getColNames() {
+		return null;
+	}
 	public Table select(Selector w,String[] r,Table[] o)
 	{	return wrapped.select( w, r, o );
 	}

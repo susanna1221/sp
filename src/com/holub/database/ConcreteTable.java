@@ -122,7 +122,9 @@ import com.holub.tools.ArrayIterator;
 		checkfile = new ImporterVisitorGetEnd();
 		importer.accept(checkfile);
 	}
-
+	public String[] getColNames() {
+		return columnNames;
+	}
 	// ----------------------------------------------------------------------
 	public void export(Table.Exporter exporter) throws IOException {
 		ExporterVisitor checkfile = new ExporterVisitorCheck();
@@ -494,24 +496,15 @@ import com.holub.tools.ArrayIterator;
 	//get * values
 	private String[] getRequestedColumnsForStar(Table[] allTables) {
 		ArrayList<String> testList = new ArrayList<String>();
-		ArrayList<Cursor[]> envelope = new ArrayList<Cursor[]>();
-		for(int i = 0; i < allTables.length; i++) {
-			Results currentRow = (Results) allTables[i].rows();
-			envelope.add(new Cursor[] { currentRow });
-
-			for(Cursor k : envelope.get(i)) {
-				for(int j = 0; j < k.columnCount(); j++) {
-					testList.add(k.columnName(j));
+		for(Table i : allTables) {
+			for(String j : i.getColNames()) {
+				if(!testList.contains(j)) {
+					testList.add(j);
 				}
 			}
 		}
-		ArrayList<String> new_testList = new ArrayList<String>();
-		for(String i : testList) {
-			if(!new_testList.contains(i)) {
-				new_testList.add(i);
-			}
-		}
-		return new_testList.toArray(new String[new_testList.size()]);
+		
+		return testList.toArray(new String[testList.size()]);
 	}
 
 	/**

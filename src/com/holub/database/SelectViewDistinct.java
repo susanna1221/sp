@@ -14,6 +14,7 @@ public class SelectViewDistinct extends ProcessDeco{
 	public void execute() {
 		if(p != null) {
 			p.execute();
+			resultTable = p.returnResult();
 		}
 		else {
 			Cursor current = resultTable.rows();
